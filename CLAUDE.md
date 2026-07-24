@@ -42,6 +42,8 @@ cp .env.example .env   # set VITE_API_BASE_URL=http://localhost:8000
 npm run dev
 ```
 
+**Gotcha:** `uvicorn --reload` only watches `.py` files by default, not `app/data/faqs.json`. After editing FAQ content, the running dev server won't pick it up until you manually restart it (or touch a `.py` file) - the in-memory Chroma collection stays stale otherwise.
+
 ## Required env vars
 
 - Backend: `OPENROUTER_API_KEY`, `FRONTEND_ORIGIN` (CORS allowlist), `MODEL_NAME` (defaults to `anthropic/claude-sonnet-5`)
