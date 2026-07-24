@@ -1,4 +1,4 @@
-from app.services.anthropic_client import _parse_escalation
+from app.services.llm_client import _parse_escalation
 
 
 def test_no_marker_means_no_escalation():

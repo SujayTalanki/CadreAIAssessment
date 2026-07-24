@@ -9,7 +9,7 @@ See [`plan.md`](./plan.md) for the full build plan, architecture decisions, and 
 
 ## Architecture
 
-- `backend/` — FastAPI + Anthropic Claude (`claude-sonnet-5`), with a retrieval-augmented knowledge base: FAQs in `backend/app/data/faqs.json` are embedded into an in-memory Chroma collection on startup, and the top-k most relevant entries are retrieved per-turn and injected into the system prompt.
+- `backend/` — FastAPI + Claude Sonnet 5 (`anthropic/claude-sonnet-5`) via OpenRouter's OpenAI-compatible API, with a retrieval-augmented knowledge base: FAQs in `backend/app/data/faqs.json` are embedded into an in-memory Chroma collection on startup, and the top-5 most relevant entries are retrieved per-turn and injected into the system prompt.
 - `frontend/` — React + Vite + TypeScript + Tailwind chat UI. Conversation state lives only in the browser; there is no database.
 
 ## Running locally
@@ -19,7 +19,7 @@ See [`plan.md`](./plan.md) for the full build plan, architecture decisions, and 
 cd backend
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env   # fill in ANTHROPIC_API_KEY
+cp .env.example .env   # fill in OPENROUTER_API_KEY
 uvicorn app.main:app --reload
 
 # frontend (separate terminal)

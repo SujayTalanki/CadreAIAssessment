@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request
 
 from app.models import ChatRequest, ChatResponse
-from app.services.anthropic_client import generate_reply
+from app.services.llm_client import generate_reply
 
 router = APIRouter()
 

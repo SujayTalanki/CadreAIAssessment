@@ -2,18 +2,22 @@ import httpx
 from fastapi.testclient import TestClient
 
 from app.main import app
-from app.services import anthropic_client
+from app.services import llm_client
 
 
-class FakeTextBlock:
-    def __init__(self, text: str):
-        self.type = "text"
-        self.text = text
+class FakeChatMessage:
+    def __init__(self, content: str):
+        self.content = content
 
 
-class FakeMessage:
-    def __init__(self, text: str):
-        self.content = [FakeTextBlock(text)]
+class FakeChoice:
+    def __init__(self, content: str):
+        self.message = FakeChatMessage(content)
+
+
+class FakeChatCompletion:
+    def __init__(self, content: str):
+        self.choices = [FakeChoice(content)]
 
 
 def _post_chat(client: TestClient, message: str):
@@ -25,9 +29,11 @@ def _post_chat(client: TestClient, message: str):
 
 def test_chat_happy_path_no_escalation(monkeypatch):
     monkeypatch.setattr(
-        anthropic_client._client.messages,
+        llm_client._client.chat.completions,
         "create",
-        lambda **kwargs: FakeMessage("You can book a call at https://cal.com/cadre-ai/strategy-call."),
+        lambda **kwargs: FakeChatCompletion(
+            "You can book a call at https://cal.com/cadre-ai/strategy-call."
+        ),
     )
 
     with TestClient(app) as client:
@@ -41,9 +47,11 @@ def test_chat_happy_path_no_escalation(monkeypatch):
 
 def test_chat_escalation_marker_is_parsed(monkeypatch):
     monkeypatch.setattr(
-        anthropic_client._client.messages,
+        llm_client._client.chat.completions,
         "create",
-        lambda **kwargs: FakeMessage("I don't have that information.\n[[ESCALATE]]"),
+        lambda **kwargs: FakeChatCompletion(
+            "I don't have that information.\n[[ESCALATE]]"
+        ),
     )
 
     with TestClient(app) as client:
@@ -56,13 +64,13 @@ def test_chat_escalation_marker_is_parsed(monkeypatch):
 
 def test_chat_rate_limit_error_degrades_gracefully(monkeypatch):
     def raise_rate_limit(**kwargs):
-        request = httpx.Request("POST", "https://api.anthropic.com/v1/messages")
+        request = httpx.Request("POST", "https://openrouter.ai/api/v1/chat/completions")
         response = httpx.Response(status_code=429, request=request)
-        raise anthropic_client.anthropic.RateLimitError(
+        raise llm_client.openai.RateLimitError(
             "rate limited", response=response, body=None
         )
 
-    monkeypatch.setattr(anthropic_client._client.messages, "create", raise_rate_limit)
+    monkeypatch.setattr(llm_client._client.chat.completions, "create", raise_rate_limit)
 
     with TestClient(app) as client:
         response = _post_chat(client, "What is Cadre AI?")
@@ -70,15 +78,15 @@ def test_chat_rate_limit_error_degrades_gracefully(monkeypatch):
     assert response.status_code == 200
     body = response.json()
     assert body["escalate"] is True
-    assert body["reply"] == anthropic_client.RATE_LIMIT_MESSAGE
+    assert body["reply"] == llm_client.RATE_LIMIT_MESSAGE
 
 
 def test_chat_connection_error_degrades_gracefully(monkeypatch):
     def raise_connection_error(**kwargs):
-        request = httpx.Request("POST", "https://api.anthropic.com/v1/messages")
-        raise anthropic_client.anthropic.APIConnectionError(request=request)
+        request = httpx.Request("POST", "https://openrouter.ai/api/v1/chat/completions")
+        raise llm_client.openai.APIConnectionError(request=request)
 
-    monkeypatch.setattr(anthropic_client._client.messages, "create", raise_connection_error)
+    monkeypatch.setattr(llm_client._client.chat.completions, "create", raise_connection_error)
 
     with TestClient(app) as client:
         response = _post_chat(client, "What is Cadre AI?")
@@ -86,7 +94,7 @@ def test_chat_connection_error_degrades_gracefully(monkeypatch):
     assert response.status_code == 200
     body = response.json()
     assert body["escalate"] is True
-    assert body["reply"] == anthropic_client.CONNECTION_ERROR_MESSAGE
+    assert body["reply"] == llm_client.CONNECTION_ERROR_MESSAGE
 
 
 def test_chat_rejects_empty_messages():
