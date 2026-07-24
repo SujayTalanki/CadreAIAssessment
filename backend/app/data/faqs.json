@@ -1,0 +1,62 @@
+[
+  {
+    "id": "who-we-are",
+    "category": "company",
+    "question": "What is Cadre AI and what do you actually do?",
+    "answer": "Cadre AI is an AI strategy consultancy. We help businesses move from AI confusion to AI confidence, department by department. That means combining strategic roadmapping, executive education, and hands-on engineering so our clients don't just experiment with AI, they deploy it in ways that produce measurable results."
+  },
+  {
+    "id": "industries-served",
+    "category": "company",
+    "question": "What industries or types of companies do you typically work with?",
+    "answer": "We work across professional services, private equity (particularly lower middle market and PE-backed portfolio companies), financial services, real estate, construction, manufacturing, and retail. Our approach adapts to the workflows, compliance needs, and data realities of each industry rather than applying a one-size-fits-all playbook."
+  },
+  {
+    "id": "core-services",
+    "category": "services",
+    "question": "What services does Cadre AI offer?",
+    "answer": "We offer four core service lines: AI Strategy (roadmapping, use-case prioritization, and ROI modeling), AI Leadership & Facilitation (executive workshops, board education, and change management), AI Engineering (custom model integration, data pipelines, and evaluation), and AI Agents (production-grade agentic workflows built for real business processes). Most engagements blend two or more of these depending on where a client is in their AI journey."
+  },
+  {
+    "id": "getting-started",
+    "category": "process",
+    "question": "How does the engagement process work if we want to get started?",
+    "answer": "Most engagements start with a strategist call to understand your goals, current tooling, and where AI could realistically move the needle. From there we typically run a short assessment (often using our AI Maturity Index), propose a scoped roadmap, and then move into the relevant service line, whether that's strategy, engineering, agent deployment, or leadership facilitation. You can book that first call directly, no lengthy sales process required."
+  },
+  {
+    "id": "pricing-approach",
+    "category": "pricing",
+    "question": "How much does it cost to work with Cadre AI?",
+    "answer": "Pricing is scoped per engagement since the work varies widely based on scope, industry, and whether we're doing strategy work, hands-on engineering, or ongoing agent support. Rather than quote a generic number here, a strategist can walk through your specific situation on a call and give you an accurate estimate."
+  },
+  {
+    "id": "book-a-call",
+    "category": "process",
+    "question": "How do I book a call with a strategist?",
+    "answer": "You can book time directly with a Cadre AI strategist at https://cal.com/cadre-ai/strategy-call. Calls typically run 30 minutes and are a no-pressure way to talk through your goals and see whether we're a good fit."
+  },
+  {
+    "id": "cadre-portal",
+    "category": "product",
+    "question": "What is the Cadre Portal and how do I access it?",
+    "answer": "The Cadre Portal is our client dashboard for tracking the AI tools and agents we've deployed for you, along with their ongoing ROI and performance results. Active clients get access as part of their engagement at https://portal.cadreai.io. If you're not yet a client and want a preview, ask your strategist during your call."
+  },
+  {
+    "id": "ai-maturity-index",
+    "category": "product",
+    "question": "What is the AI Maturity Index and how do I get scored?",
+    "answer": "The AI Maturity Index is our free proprietary diagnostic that scores your organization from 1 to 5 across five dimensions: Data & Infrastructure, Tooling & Integration, Workforce Readiness, Governance & Security, and Strategic Alignment. It takes about 15 minutes and can be completed self-serve through the Cadre Portal or live with a strategist, which is often a great starting point before a broader engagement."
+  },
+  {
+    "id": "llm-selection-security",
+    "category": "technical",
+    "question": "Which AI models do you use, and how do you handle data security?",
+    "answer": "We're model-agnostic and work across OpenAI, Anthropic (Claude), Google, Microsoft, AWS, Salesforce, Snowflake, and OpenRouter for broader model access, selecting the right model per use case based on cost, latency, quality, and compliance requirements. Your data is never used to train third-party models. Security posture, data handling, and compliance requirements are scoped specifically to each client engagement, so a strategist can walk through the details relevant to your environment."
+  },
+  {
+    "id": "case-studies",
+    "category": "company",
+    "question": "Do you have case studies or examples of results you've delivered for other clients?",
+    "answer": "We have a range of engagement examples across our core industries, but the most relevant ones depend on your specific situation. Ask your strategist during your call and they can walk through case studies and outcomes relevant to your industry and use case."
+  }
+]
