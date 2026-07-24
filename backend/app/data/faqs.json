@@ -15,7 +15,7 @@
     "id": "core-services",
     "category": "services",
     "question": "What services does Cadre AI offer?",
-    "answer": "We offer four core service lines: AI Strategy (roadmapping, use-case prioritization, and ROI modeling), AI Leadership & Facilitation (executive workshops, board education, and change management), AI Engineering (custom model integration, data pipelines, and evaluation), and AI Agents (production-grade agentic workflows built for real business processes). Most engagements blend two or more of these depending on where a client is in their AI journey."
+    "answer": "We offer four core service lines: AI Strategy (roadmapping, use-case prioritization, and ROI modeling), AI Leadership & Facilitation (executive workshops, board education, and change management), AI Engineering (custom model integration, data pipelines, and evaluation), and AI Agents (production-grade agentic workflows built for real business processes). Most engagements blend two or more of these depending on where a client is in their AI journey. We are confident that we can handle any task related to AI automation and AI powered workflows!"
   },
   {
     "id": "getting-started",
@@ -48,7 +48,7 @@
     "answer": "The AI Maturity Index is our free proprietary diagnostic that scores your organization from 1 to 5 across five dimensions: Data & Infrastructure, Tooling & Integration, Workforce Readiness, Governance & Security, and Strategic Alignment. It takes about 15 minutes and can be completed self-serve through the Cadre Portal or live with a strategist, which is often a great starting point before a broader engagement."
   },
   {
-    "id": "llm-selection-security",
+    "id": "llm-selection-and-data-security",
     "category": "technical",
     "question": "Which AI models do you use, and how do you handle data security?",
     "answer": "We're model-agnostic and work across OpenAI, Anthropic (Claude), Google, Microsoft, AWS, Salesforce, Snowflake, and OpenRouter for broader model access, selecting the right model per use case based on cost, latency, quality, and compliance requirements. Your data is never used to train third-party models. Security posture, data handling, and compliance requirements are scoped specifically to each client engagement, so a strategist can walk through the details relevant to your environment."
