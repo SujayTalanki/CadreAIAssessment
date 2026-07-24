@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -5,7 +7,14 @@ from app.config import settings
 from app.routes.chat import router as chat_router
 from app.services.retrieval import ingest_faqs
 
-app = FastAPI(title="Cadre AI Support Chatbot")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    app.state.faq_collection = ingest_faqs()
+    yield
+
+
+app = FastAPI(title="Cadre AI Support Chatbot", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -14,11 +23,6 @@ app.add_middleware(
     allow_headers=["*"],
     allow_credentials=True,
 )
-
-
-@app.on_event("startup")
-async def startup():
-    app.state.faq_collection = ingest_faqs()
 
 
 @app.get("/api/health")
