@@ -46,5 +46,5 @@ Phases 1+2 and 4+6 are independent enough to run as parallel Claude Code subagen
 
 ## Known limitations
 
-- Render's free tier spins down after ~15 minutes idle; the first request after idle can take 30-50 seconds while it wakes up. This is disclosed here and in the README rather than hidden.
+- Render's free tier spins down after ~15 minutes idle, causing a 30-50 second cold start on the first request after. Mitigated with a scheduled GitHub Actions job (`.github/workflows/keep-alive.yml`) that pings `/api/health` every 10 minutes so the service never idles long enough to spin down — chosen over paying for Render's Starter plan (removes the issue but costs money) or switching to Cloud Run (faster cold starts if it does happen, but requires containerizing the app instead of Render's zero-config Python buildpack, more setup for no real gain here).
 - The knowledge base content (booking link, portal URL, AI Maturity Index specifics) is fabricated for this exercise, since Cadre AI has no real backend systems to integrate with.

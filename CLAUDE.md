@@ -46,6 +46,10 @@ npm run dev
 - Backend: `OPENROUTER_API_KEY`, `FRONTEND_ORIGIN` (CORS allowlist), `MODEL_NAME` (defaults to `anthropic/claude-sonnet-5`)
 - Frontend: `VITE_API_BASE_URL`
 
+## Deployment
+
+Backend → Render (via `render.yaml` blueprint), frontend → Vercel (root directory `frontend/`). Render's free tier spins down after ~15 min idle; `.github/workflows/keep-alive.yml` pings `/api/health` every 10 minutes to prevent that, driven by a repo variable `BACKEND_HEALTH_URL` (not a secret — it's just the public Render URL). Don't remove this workflow without either accepting the cold-start UX regression or setting up an equivalent mitigation.
+
 ## See also
 
 `plan.md` at repo root for the full phased build plan and explicit scope-cut list.

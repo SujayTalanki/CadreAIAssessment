@@ -31,6 +31,6 @@ npm run dev
 
 ## Known limitations
 
-- Render's free tier spins down after ~15 minutes idle — the first request after idle can take 30-50 seconds to wake up.
+- Render's free tier spins down after ~15 minutes idle, causing a 30-50 second cold start on the first request after. Mitigated by `.github/workflows/keep-alive.yml`, a scheduled GitHub Actions job that pings `/api/health` every 10 minutes so the service never idles long enough to spin down. **Setup required:** after deploying the backend, set a repo variable `BACKEND_HEALTH_URL` (Settings → Secrets and variables → Actions → Variables) to the Render URL, e.g. `https://cadre-ai-chatbot-backend.onrender.com`.
 - The knowledge base content (booking link, portal URL, etc.) is fabricated for this exercise, since Cadre AI has no real backend systems to integrate with.
 - See `plan.md` for the full list of deliberate scope cuts (no DB, no auth, no streaming, etc.).
