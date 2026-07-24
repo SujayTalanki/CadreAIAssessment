@@ -97,6 +97,96 @@ def test_chat_connection_error_degrades_gracefully(monkeypatch):
     assert body["reply"] == llm_client.CONNECTION_ERROR_MESSAGE
 
 
+def test_chat_authentication_error_degrades_gracefully(monkeypatch):
+    def raise_auth_error(**kwargs):
+        request = httpx.Request("POST", "https://openrouter.ai/api/v1/chat/completions")
+        response = httpx.Response(status_code=401, request=request)
+        raise llm_client.openai.AuthenticationError(
+            "invalid key", response=response, body=None
+        )
+
+    monkeypatch.setattr(llm_client._client.chat.completions, "create", raise_auth_error)
+
+    with TestClient(app) as client:
+        response = _post_chat(client, "What is Cadre AI?")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["escalate"] is True
+    assert body["reply"] == llm_client.GENERIC_ERROR_MESSAGE
+
+
+def test_chat_unexpected_exception_degrades_gracefully(monkeypatch):
+    def raise_unexpected(**kwargs):
+        raise ValueError("something unrelated to the LLM broke")
+
+    monkeypatch.setattr(llm_client._client.chat.completions, "create", raise_unexpected)
+
+    with TestClient(app) as client:
+        response = _post_chat(client, "What is Cadre AI?")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["escalate"] is True
+    assert body["reply"] == llm_client.GENERIC_ERROR_MESSAGE
+
+
+class FakeEmptyChoicesCompletion:
+    def __init__(self):
+        self.choices = []
+
+
+def test_chat_empty_choices_degrades_gracefully_instead_of_500(monkeypatch):
+    # A provider can return HTTP 200 with an empty choices list (e.g. on a
+    # moderation refusal). generate_reply must not let that raise an
+    # unhandled IndexError past the always-200 contract.
+    monkeypatch.setattr(
+        llm_client._client.chat.completions,
+        "create",
+        lambda **kwargs: FakeEmptyChoicesCompletion(),
+    )
+
+    with TestClient(app) as client:
+        response = _post_chat(client, "What is Cadre AI?")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["escalate"] is True
+    assert body["reply"] == llm_client.GENERIC_ERROR_MESSAGE
+
+
+def test_chat_sends_system_prompt_and_full_history_to_the_model(monkeypatch):
+    captured = {}
+
+    def capture_and_respond(**kwargs):
+        captured.update(kwargs)
+        return FakeChatCompletion("Sure, here's the answer.")
+
+    monkeypatch.setattr(llm_client._client.chat.completions, "create", capture_and_respond)
+
+    with TestClient(app) as client:
+        response = client.post(
+            "/api/chat",
+            json={
+                "messages": [
+                    {"role": "user", "content": "What does Cadre AI do?"},
+                    {"role": "assistant", "content": "We help with AI strategy."},
+                    {"role": "user", "content": "How do I book a call?"},
+                ]
+            },
+        )
+
+    assert response.status_code == 200
+    sent_messages = captured["messages"]
+    assert sent_messages[0]["role"] == "system"
+    assert "Cadre AI support assistant" in sent_messages[0]["content"]
+    assert "Relevant knowledge for this question" in sent_messages[0]["content"]
+    # The full conversation history follows the system message, in order,
+    # unmodified.
+    assert [m["role"] for m in sent_messages[1:]] == ["user", "assistant", "user"]
+    assert sent_messages[-1]["content"] == "How do I book a call?"
+
+
 def test_chat_rejects_empty_messages():
     with TestClient(app) as client:
         response = client.post("/api/chat", json={"messages": []})

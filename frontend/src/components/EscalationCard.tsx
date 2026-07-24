@@ -4,17 +4,12 @@ const SUPPORT_EMAIL = 'hello@cadreai.io';
 interface EscalationCardProps {
   /** The user's last question, used to pre-fill the email body for context. */
   lastUserMessage?: string;
-  /** Optional heading override, e.g. for the network-error safety net variant. */
-  heading?: string;
-  /** Optional supporting copy override. */
-  description?: string;
 }
 
-export default function EscalationCard({
-  lastUserMessage,
-  heading = "Looks like this needs a human touch",
-  description = "I've done what I can from here — the fastest way forward is to talk directly with the Cadre AI team.",
-}: EscalationCardProps) {
+export default function EscalationCard({ lastUserMessage }: EscalationCardProps) {
+  const heading = "Looks like this needs a human touch";
+  const description =
+    "I've done what I can from here — the fastest way forward is to talk directly with the Cadre AI team.";
   const subject = encodeURIComponent('Question from the Cadre AI support chat');
   const bodyLines = [
     "Hi Cadre AI team,",

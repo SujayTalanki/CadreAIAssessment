@@ -22,7 +22,8 @@ A customer support chatbot for Cadre AI (a fictional-for-this-exercise AI strate
 - **Non-streaming `/api/chat` by design.** Don't add SSE/streaming without updating this file first — the escalation-marker parsing and error-handling logic both assume the full response text is available before returning.
 - **No database, no auth, no persisted conversation history.** This is a deliberate scope cut for a stateless MVP support widget, not an oversight. See `plan.md` for the full scope-cut list.
 - **Backend tests never hit the real OpenRouter API** — `llm_client._client.chat.completions.create` is monkeypatched in `backend/tests/test_chat_endpoint.py`; retrieval tests run against a real (but ephemeral, in-memory) Chroma collection since that has no external cost.
-- **Error handling in `llm_client.py` must always return HTTP 200** with a graceful user-facing message on failure (rate limit, connection error, auth error, etc.) — never leak a stack trace to the frontend.
+- **Error handling in `llm_client.py` must always return HTTP 200** with a graceful user-facing message on failure (rate limit, connection error, auth error, empty response, or anything else) — never leak a stack trace to the frontend. This is why `generate_reply`'s try block wraps retrieval + the API call + response parsing all together, not just the API call.
+- **`POST /api/chat` in `routes/chat.py` must stay a plain `def`, not `async def`.** `generate_reply` does blocking work (a synchronous Chroma query, then a synchronous HTTP call to OpenRouter); FastAPI runs sync route handlers in a thread pool, so this keeps one slow chat request from stalling the event loop for every other concurrent request — including the `/api/health` keep-alive ping.
 
 ## Run locally
 
