@@ -2,8 +2,8 @@
 
 A customer support chatbot for Cadre AI — answers common inbound questions (what Cadre does, booking a strategist call, portal access, the AI Maturity Index, LLM selection & data security) and escalates gracefully when it can't help.
 
-**Live demo:** TODO — add deployed Vercel URL here after Phase 8
-**Backend API:** TODO — add deployed Render URL here after Phase 8
+**Live demo:** https://cadre-ai-assessment-iota.vercel.app
+**Backend API:** https://cadre-ai-chatbot-backend.onrender.com
 
 See [`plan.md`](./plan.md) for the full build plan, architecture decisions, and explicit scope cuts. See [`CLAUDE.md`](./CLAUDE.md) for repo conventions.
 
