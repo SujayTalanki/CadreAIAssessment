@@ -58,11 +58,11 @@ def generate_reply(
     # to hit that same fallback rather than bubbling up as a 500.
     try:
         latest_user_message = messages[-1].content
-        # k=5 (half the 10-entry corpus): at k=3, compound questions ("what
-        # do you do, and do you serve X industry?") sometimes missed the
-        # relevant chunk to a near-topic one (observed: "industries-served"
-        # losing out to "cadre-portal" for a real-estate question). Cheap to
-        # raise given how small the corpus is.
+        # k=5: at k=3, compound questions ("what do you do, and do you serve
+        # X industry?") sometimes missed the relevant chunk to a near-topic
+        # one (observed: "industries-served" losing out to "cadre-portal"
+        # for a real-estate question). Cheap to raise given how small the
+        # corpus is (12 entries as of writing).
         chunks = retrieval.query(collection, latest_user_message, k=5)
         system = SYSTEM_PROMPT + "\n\n" + format_knowledge_block(chunks)
 

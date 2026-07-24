@@ -58,5 +58,17 @@
     "category": "company",
     "question": "Do you have case studies or examples of results you've delivered for other clients?",
     "answer": "We have a range of engagement examples across our core industries, but the most relevant ones depend on your specific situation. Ask your strategist during your call and they can walk through case studies and outcomes relevant to your industry and use case."
+  },
+  {
+    "id": "why-cadre-ai",
+    "category": "company",
+    "question": "What makes Cadre AI different, and why should we choose you over building AI in-house or hiring another vendor?",
+    "answer": "It comes down to three outcomes: we help you Drive Revenue by scaling faster with AI-driven automation and predictive insights that unlock new growth opportunities, Increase Profitability by optimizing operations and eliminating inefficiencies to boost profit margins and enterprise value, and Elevate Employees by removing tedious tasks so your team can focus on high-impact, meaningful work. There's also a structural case for working with a specialized vendor rather than going in-house: AI projects developed with specialized vendors have a success rate 300% higher than in-house AI projects, since a dedicated team brings pattern-matched expertise across many implementations rather than learning at your expense."
+  },
+  {
+    "id": "the-cadre-way",
+    "category": "company",
+    "question": "What is \"The Cadre Way,\" and what values or culture does your team operate by?",
+    "answer": "The Cadre Way is the mindset and behaviors we hire for, reward, and live by: Growth Mindset (we're lifelong learners on a mission to get 1% better every single day), Extreme Ownership (we own the problem, the solution, and the outcome, regardless of scenario), Team First (we constantly find ways to make the entire team and company better), and Scrappy (we're adaptable, resourceful, and always solving problems)."
   }
 ]
