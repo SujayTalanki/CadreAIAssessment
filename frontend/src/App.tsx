@@ -2,24 +2,16 @@ import { useState } from 'react';
 import ChatWindow from './components/ChatWindow';
 import MessageBubble from './components/MessageBubble';
 import TypingIndicator from './components/TypingIndicator';
-import EscalationCard from './components/EscalationCard';
+import EscalationCard, { CONTACT_URL } from './components/EscalationCard';
 import ChatInput from './components/ChatInput';
 import { sendMessage } from './lib/api';
 import type { Message } from './types';
 
-const CONTACT_MAILTO = 'mailto:hello@cadreai.io?subject=Question%20for%20Cadre%20AI';
 const GREETING: Message = {
   role: 'assistant',
   content:
     "Hi! I'm the Cadre AI assistant — ask me about our services, booking a call, or anything else.",
 };
-
-function lastUserMessageBefore(messages: Message[], index: number): string | undefined {
-  for (let i = index - 1; i >= 0; i -= 1) {
-    if (messages[i].role === 'user') return messages[i].content;
-  }
-  return undefined;
-}
 
 export default function App() {
   const [messages, setMessages] = useState<Message[]>([GREETING]);
@@ -79,7 +71,9 @@ export default function App() {
           </div>
         </div>
         <a
-          href={CONTACT_MAILTO}
+          href={CONTACT_URL}
+          target="_blank"
+          rel="noopener noreferrer"
           className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-100 sm:text-sm"
         >
           Contact us
@@ -90,9 +84,7 @@ export default function App() {
         {messages.map((message, index) => (
           <div key={index} className="space-y-3">
             <MessageBubble message={message} />
-            {escalatedIndices.has(index) && (
-              <EscalationCard lastUserMessage={lastUserMessageBefore(messages, index)} />
-            )}
+            {escalatedIndices.has(index) && <EscalationCard />}
           </div>
         ))}
 
@@ -113,22 +105,12 @@ export default function App() {
                   Retry
                 </button>
                 <a
-                  href="https://cal.com/cadre-ai/strategy-call"
+                  href={CONTACT_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center rounded-lg border border-red-300 bg-white px-3 py-1.5 text-sm font-medium text-red-700 transition-colors hover:bg-red-100"
                 >
-                  Book a call
-                </a>
-                <a
-                  href={`mailto:hello@cadreai.io?subject=${encodeURIComponent(
-                    'Question for Cadre AI',
-                  )}&body=${encodeURIComponent(
-                    lastUserMessageBefore(messages, messages.length) ?? '',
-                  )}`}
-                  className="inline-flex items-center rounded-lg border border-red-300 bg-white px-3 py-1.5 text-sm font-medium text-red-700 transition-colors hover:bg-red-100"
-                >
-                  Email us
+                  Contact us
                 </a>
               </div>
             </div>

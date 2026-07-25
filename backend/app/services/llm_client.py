@@ -25,15 +25,15 @@ ESCALATE_MARKER = "[[ESCALATE]]"
 
 RATE_LIMIT_MESSAGE = (
     "We're getting a lot of questions right now. Please try again in a "
-    "moment, or reach out to us directly at hello@cadreai.io."
+    "moment, or reach out to us directly."
 )
 CONNECTION_ERROR_MESSAGE = (
     "Something went wrong on our end. Please try again, or reach out to "
-    "us directly at hello@cadreai.io."
+    "us directly."
 )
 GENERIC_ERROR_MESSAGE = (
     "Sorry, something went wrong while answering that. Please try again, "
-    "or reach out to us directly at hello@cadreai.io."
+    "or reach out to us directly."
 )
 
 
