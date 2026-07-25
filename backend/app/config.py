@@ -15,9 +15,7 @@ class Settings:
 
 settings = Settings()
 
-# Fail fast: importing this module is the single choke point every entrypoint
-# goes through, so a missing key surfaces immediately instead of the app
-# starting up and only failing once a chat request hits the model provider.
+# Fail fast: Ask for the API key if it's missing
 if not settings.OPENROUTER_API_KEY:
     raise RuntimeError(
         "OPENROUTER_API_KEY is missing or empty. Set it in backend/.env "

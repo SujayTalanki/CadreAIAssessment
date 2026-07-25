@@ -16,7 +16,8 @@ COLLECTION_NAME = "cadre_faqs"
 
 
 def ingest_faqs(faqs_path: str | Path | None = None) -> chromadb.Collection:
-    """Load the FAQ corpus from disk and embed it into a fresh Chroma collection.
+    """
+    Load the FAQ corpus from disk and embed it into a fresh Chroma collection.
 
     Args:
         faqs_path (str | Path | None): Path to the FAQ JSON file. Defaults to
@@ -51,7 +52,8 @@ def ingest_faqs(faqs_path: str | Path | None = None) -> chromadb.Collection:
 
 
 def query(collection: chromadb.Collection, text: str, k: int) -> list[dict]:
-    """Embed a query and return the k most similar FAQ entries.
+    """
+    Embed a query and return the k most similar FAQ entries.
 
     Args:
         collection (chromadb.Collection): The FAQ collection to search, as

@@ -8,7 +8,8 @@ from app.services.retrieval import ingest_faqs
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Build the in-memory FAQ collection once at application startup.
+    """
+    Build the in-memory FAQ collection once at application startup.
 
     Args:
         app (FastAPI): The FastAPI application instance.
@@ -32,7 +33,8 @@ app.add_middleware(
 
 @app.get("/api/health")
 async def health():
-    """Health check endpoint used by Render's keep-alive workflow.
+    """
+    Health check endpoint used by Render's keep-alive workflow.
 
     Returns:
         dict: A static {"status": "ok"} payload.

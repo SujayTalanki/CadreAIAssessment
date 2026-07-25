@@ -36,7 +36,8 @@ enthusiasm.
 
 
 def format_knowledge_block(chunks: list[dict]) -> str:
-    """Format retrieved FAQ chunks into a knowledge block for the system prompt.
+    """
+    Format retrieved FAQ chunks into a knowledge block for the system prompt.
 
     Args:
         chunks (list[dict]): FAQ entries returned by retrieval.query(), each
@@ -56,7 +57,5 @@ def format_knowledge_block(chunks: list[dict]) -> str:
             "connect the user with a human strategist."
         )
 
-    entries = "\n\n".join(
-        f"- Q: {chunk['question']}\n  A: {chunk['answer']}" for chunk in chunks
-    )
+    entries = "\n\n".join(f"- Q: {chunk['question']}\n  A: {chunk['answer']}" for chunk in chunks)
     return f"Relevant knowledge for this question:\n\n{entries}"

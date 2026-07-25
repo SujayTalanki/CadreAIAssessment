@@ -29,10 +29,12 @@ RATE_LIMIT_MESSAGE = (
     "We're getting a lot of questions right now. Please try again in a "
     "moment, or reach out to us directly."
 )
+
 CONNECTION_ERROR_MESSAGE = (
     "Something went wrong on our end. Please try again, or reach out to "
     "us directly."
 )
+
 GENERIC_ERROR_MESSAGE = (
     "Sorry, something went wrong while answering that. Please try again, "
     "or reach out to us directly."
@@ -40,7 +42,8 @@ GENERIC_ERROR_MESSAGE = (
 
 
 def _parse_escalation(reply_text: str) -> tuple[str, bool]:
-    """Strip the escalation marker from a reply and report whether it was present.
+    """
+    Strip the escalation marker from a reply and report whether it was present.
 
     The system prompt places the marker on its own final line, so this
     matches that exactly rather than substring-containment - otherwise a
@@ -61,10 +64,9 @@ def _parse_escalation(reply_text: str) -> tuple[str, bool]:
     return reply_text.strip(), escalate
 
 
-def generate_reply(
-    messages: list[ChatMessage], collection: chromadb.Collection
-) -> ChatResponse:
-    """Retrieve relevant FAQ knowledge and generate a grounded chat reply.
+def generate_reply(messages: list[ChatMessage], collection: chromadb.Collection) -> ChatResponse:
+    """
+    Retrieve relevant FAQ knowledge and generate a grounded chat reply.
 
     Retrieval, the API call, and response parsing all live inside one try
     block: CLAUDE.md guarantees /api/chat always returns HTTP 200 with a

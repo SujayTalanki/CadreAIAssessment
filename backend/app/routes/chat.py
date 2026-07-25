@@ -7,7 +7,8 @@ router = APIRouter()
 
 @router.post("/api/chat", response_model=ChatResponse)
 def chat(request: Request, body: ChatRequest) -> ChatResponse:
-    """Handle a chat request and return the assistant's reply.
+    """
+    Handle a chat request and return the assistant's reply.
 
     Deliberately a plain `def`, not `async def`: generate_reply does
     blocking work (a synchronous Chroma embedding query, then a synchronous
@@ -23,7 +24,6 @@ def chat(request: Request, body: ChatRequest) -> ChatResponse:
             conversation history.
 
     Returns:
-        ChatResponse: The assistant's reply and whether to escalate to a
-            human.
+        ChatResponse: The assistant's reply and whether to escalate to a human.
     """
     return generate_reply(body.messages, request.app.state.faq_collection)

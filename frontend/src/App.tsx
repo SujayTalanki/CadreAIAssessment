@@ -60,24 +60,14 @@ export default function App() {
 
   return (
     <div className="flex h-screen flex-col bg-slate-50">
-      <header className="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3 shadow-sm sm:px-6">
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-sm font-bold text-white">
-            C
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-slate-900">Cadre AI Support</p>
-            <p className="text-xs text-slate-500">Usually replies in a few seconds</p>
-          </div>
+      <header className="flex items-center gap-2 border-b border-slate-200 bg-white px-4 py-3 shadow-sm sm:px-6">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-sm font-bold text-white">
+          C
         </div>
-        <a
-          href={CONTACT_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-100 sm:text-sm"
-        >
-          Talk With Our Team
-        </a>
+        <div>
+          <p className="text-sm font-semibold text-slate-900">Cadre AI Support</p>
+          <p className="text-xs text-slate-500">Usually replies in a few seconds</p>
+        </div>
       </header>
 
       <ChatWindow>
