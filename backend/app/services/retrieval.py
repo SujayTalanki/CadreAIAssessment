@@ -40,7 +40,7 @@ def ingest_faqs(faqs_path: str | Path | None = None) -> chromadb.Collection:
     return collection
 
 
-def query(collection: chromadb.Collection, text: str, k: int = 3) -> list[dict]:
+def query(collection: chromadb.Collection, text: str, k: int) -> list[dict]:
     results = collection.query(query_texts=[text], n_results=k)
     metadatas = results.get("metadatas") or []
     matches = metadatas[0] if metadatas else []
