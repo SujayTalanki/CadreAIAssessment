@@ -1,8 +1,6 @@
 from contextlib import asynccontextmanager
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from app.config import settings
 from app.routes.chat import router as chat_router
 from app.services.retrieval import ingest_faqs
@@ -10,6 +8,14 @@ from app.services.retrieval import ingest_faqs
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    """Build the in-memory FAQ collection once at application startup.
+
+    Args:
+        app (FastAPI): The FastAPI application instance.
+
+    Yields:
+        None: Control returns to FastAPI until the app shuts down.
+    """
     app.state.faq_collection = ingest_faqs()
     yield
 
@@ -26,6 +32,11 @@ app.add_middleware(
 
 @app.get("/api/health")
 async def health():
+    """Health check endpoint used by Render's keep-alive workflow.
+
+    Returns:
+        dict: A static {"status": "ok"} payload.
+    """
     return {"status": "ok"}
 
 

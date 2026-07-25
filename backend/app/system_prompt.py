@@ -1,12 +1,5 @@
-"""Static system instructions for the Cadre AI support chatbot.
-
-This module holds only behavioral instructions for the model. Factual
-content about Cadre AI lives exclusively in app/data/faqs.json and is
-injected at request time via format_knowledge_block, appended after
-SYSTEM_PROMPT.
-"""
-
-SYSTEM_PROMPT = """You are the Cadre AI support assistant, a helpful chatbot on the Cadre AI \
+SYSTEM_PROMPT = """
+You are the Cadre AI support assistant, a helpful chatbot on the Cadre AI \
 website. Cadre AI is an AI strategy consultancy, and your job is to answer \
 common inbound questions from visitors and prospective clients.
 
@@ -38,10 +31,22 @@ it when the provided knowledge does answer the question.
 
 Keep your responses concise and professional-but-warm. Avoid being overly \
 formal or robotic, but also avoid heavy use of emojis or exclamation-point \
-enthusiasm."""
+enthusiasm.
+"""
 
 
 def format_knowledge_block(chunks: list[dict]) -> str:
+    """Format retrieved FAQ chunks into a knowledge block for the system prompt.
+
+    Args:
+        chunks (list[dict]): FAQ entries returned by retrieval.query(), each
+            with question and answer keys. May be empty if nothing matched.
+
+    Returns:
+        str: A "Relevant knowledge for this question" block listing each
+            chunk's question/answer pair, or a fallback message nudging the
+            model to escalate when chunks is empty.
+    """
     if not chunks:
         return (
             "Relevant knowledge for this question:\n\n"

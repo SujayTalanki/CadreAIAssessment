@@ -1,11 +1,12 @@
 import os
-
 from dotenv import load_dotenv
 
 load_dotenv()
 
 
 class Settings:
+    """Application configuration, loaded from environment variables at import time."""
+
     OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
     OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
     FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN", "http://localhost:5173")
