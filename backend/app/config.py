@@ -17,7 +17,4 @@ settings = Settings()
 
 # Fail fast: Ask for the API key if it's missing
 if not settings.OPENROUTER_API_KEY:
-    raise RuntimeError(
-        "OPENROUTER_API_KEY is missing or empty. Set it in backend/.env "
-        "(see backend/.env.example)."
-    )
+    raise RuntimeError("OPENROUTER_API_KEY is missing or empty. Set it in backend/.env")

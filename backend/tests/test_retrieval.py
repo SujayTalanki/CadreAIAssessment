@@ -3,7 +3,7 @@ from app.services.retrieval import ingest_faqs, query
 
 def test_ingest_loads_all_faqs():
     collection = ingest_faqs()
-    assert collection.count() == 15
+    assert collection.count() == 19
 
 
 def test_query_returns_relevant_faq_for_booking():
@@ -50,10 +50,6 @@ def test_query_returns_relevant_faq_for_events():
 
 
 def test_query_returns_industries_served_for_compound_question():
-    # Regression check: industries-served has repeatedly been crowded out of
-    # fixed top-k windows for compound questions as the corpus grew (it
-    # ranked #11/15 at one point) - this is why llm_client.py retrieves
-    # k=collection.count() (the whole corpus) instead of a fixed number.
     collection = ingest_faqs()
     results = query(
         collection,
