@@ -3,19 +3,19 @@
     "id": "who-we-are",
     "category": "company",
     "question": "What is Cadre AI and what do you actually do?",
-    "answer": "Cadre AI is an AI strategy consultancy, based in San Diego, California! We're an emerging startup in the space, with around 100 hardworking employees. We help businesses move from AI confusion to AI confidence, department by department. That means combining strategic roadmapping, executive education, and hands-on engineering so our clients don't just experiment with AI, they deploy it in ways that produce measurable results."
+    "answer": "Cadre AI is an AI strategy consultancy, based in San Diego, California! Founded in 2024, we're an emerging startup in the space, with 100 hardworking employees! We help businesses move from AI confusion to AI confidence, department by department. That means combining strategic roadmapping, executive education, and hands-on engineering so our clients don't just experiment with AI, they deploy it in ways that produce measurable results."
   },
   {
     "id": "industries-served",
     "category": "company",
     "question": "What industries or types of companies do you typically work with?",
-    "answer": "We work across professional services, private equity (particularly lower middle market and PE-backed portfolio companies), financial services, real estate, construction, manufacturing, and retail. Our approach adapts to the workflows, compliance needs, and data realities of each industry rather than applying a one-size-fits-all playbook."
+    "answer": "We work across professional services, private equity, financial services, real estate, construction, manufacturing, retail, and other B2B companies. Our approach adapts to the workflows, compliance needs, and data realities of each industry rather than applying a one-size-fits-all playbook."
   },
   {
     "id": "core-services",
     "category": "services",
     "question": "What services does Cadre AI offer?",
-    "answer": "We offer four core service lines: AI Strategy (roadmapping, use-case prioritization, and ROI modeling), AI Leadership & Facilitation (executive workshops, board education, and change management), AI Engineering (custom model integration, data pipelines, and evaluation), and AI Agents (production-grade agentic workflows built for real business processes). Most engagements blend two or more of these depending on where a client is in their AI journey. We are confident that we can handle any task related to AI automation and AI powered workflows!"
+    "answer": "We offer four core service lines: AI Strategy (roadmapping, use-case prioritization, and ROI modeling), AI Leadership & Facilitation (executive workshops, board education, and change management), AI Engineering (custom model integration, data pipelines, and evaluation), and AI Agents (production-grade agentic workflows built for real business processes). Most engagements blend two or more of these depending on where a client is in their AI journey. We are confident that we can handle any task related to AI automation!"
   },
   {
     "id": "getting-started",
