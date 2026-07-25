@@ -76,5 +76,17 @@
     "category": "company",
     "question": "Where can I learn more about Cadre AI, like a podcast, blog, or articles?",
     "answer": "You can check out our AI 2030 podcast at https://www.cadreai.com/ai-2030-podcast, read our articles and insights at https://www.cadreai.com/articles, or explore the full site at https://www.cadreai.com."
+  },
+  {
+    "id": "careers-jobs",
+    "category": "company",
+    "question": "How can I join Cadre AI, or do you have any job openings or career opportunities?",
+    "answer": "We're always looking to grow our team with the best people in AI! At Cadre AI, we're building a collection of innovators and the most talented minds in AI who are passionate about transforming how businesses operate and eager to grow their careers at the cutting edge of technology. You can check out current opportunities and learn more about joining the team at https://www.cadreai.com/careers."
+  },
+  {
+    "id": "events",
+    "category": "company",
+    "question": "Does Cadre AI host events, workshops, or speaking engagements I can attend or book?",
+    "answer": "Yes — we regularly host AI-focused events for business leaders, including keynote speeches, fireside chats, multi-day conference series, and custom workshops that blend strategy with real, hands-on use cases. The goal is to move audiences beyond theory into practical, execution-focused AI strategy, led directly by our founders and execs. Events run both in-person and virtual, with recordings typically provided afterward. Check out https://www.cadreai.com/events for what's currently on the calendar, or reach out if you'd like to book Cadre AI to speak at your own event."
   }
 ]

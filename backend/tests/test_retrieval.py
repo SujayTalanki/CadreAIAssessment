@@ -3,7 +3,7 @@ from app.services.retrieval import ingest_faqs, query
 
 def test_ingest_loads_all_faqs():
     collection = ingest_faqs()
-    assert collection.count() == 13
+    assert collection.count() == 15
 
 
 def test_query_returns_relevant_faq_for_booking():
@@ -35,15 +35,30 @@ def test_query_returns_relevant_faq_for_learn_more_resources():
     assert "learn-more-resources" in [r["id"] for r in results]
 
 
+def test_query_returns_relevant_faq_for_careers():
+    collection = ingest_faqs()
+    results = query(collection, "are you hiring, how do I apply for a job there", k=3)
+
+    assert "careers-jobs" in [r["id"] for r in results]
+
+
+def test_query_returns_relevant_faq_for_events():
+    collection = ingest_faqs()
+    results = query(collection, "do you host any webinars or speaking events", k=3)
+
+    assert "events" in [r["id"] for r in results]
+
+
 def test_query_returns_industries_served_for_compound_question():
     # Regression check: industries-served has repeatedly been crowded out of
-    # smaller top-k windows for compound questions as the corpus grew (it
-    # ranked #8/13 at one point) - this is why llm_client.py uses k=10.
+    # fixed top-k windows for compound questions as the corpus grew (it
+    # ranked #11/15 at one point) - this is why llm_client.py retrieves
+    # k=collection.count() (the whole corpus) instead of a fixed number.
     collection = ingest_faqs()
     results = query(
         collection,
         "What does Cadre AI do, and do you work with real estate companies?",
-        k=10,
+        k=collection.count(),
     )
 
     assert "industries-served" in [r["id"] for r in results]
