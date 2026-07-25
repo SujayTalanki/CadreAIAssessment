@@ -70,5 +70,11 @@
     "category": "company",
     "question": "What is \"The Cadre Way,\" and what values or culture does your team operate by?",
     "answer": "The Cadre Way is the mindset and behaviors we hire for, reward, and live by: Growth Mindset (we're lifelong learners on a mission to get 1% better every single day), Extreme Ownership (we own the problem, the solution, and the outcome, regardless of scenario), Team First (we constantly find ways to make the entire team and company better), and Scrappy (we're adaptable, resourceful, and always solving problems)."
+  },
+  {
+    "id": "learn-more-resources",
+    "category": "company",
+    "question": "Where can I learn more about Cadre AI, like a podcast, blog, or articles?",
+    "answer": "You can check out our AI 2030 podcast at https://www.cadreai.com/ai-2030-podcast, read our articles and insights at https://www.cadreai.com/articles, or explore the full site at https://www.cadreai.com."
   }
 ]

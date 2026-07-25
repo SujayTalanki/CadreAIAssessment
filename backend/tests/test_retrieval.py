@@ -3,7 +3,7 @@ from app.services.retrieval import ingest_faqs, query
 
 def test_ingest_loads_all_faqs():
     collection = ingest_faqs()
-    assert collection.count() == 12
+    assert collection.count() == 13
 
 
 def test_query_returns_relevant_faq_for_booking():
@@ -26,3 +26,24 @@ def test_query_returns_relevant_faq_for_why_us():
     results = query(collection, "why should we choose Cadre AI over another vendor", k=3)
 
     assert "why-cadre-ai" in [r["id"] for r in results]
+
+
+def test_query_returns_relevant_faq_for_learn_more_resources():
+    collection = ingest_faqs()
+    results = query(collection, "do you have a podcast or blog I can check out", k=3)
+
+    assert "learn-more-resources" in [r["id"] for r in results]
+
+
+def test_query_returns_industries_served_for_compound_question():
+    # Regression check: industries-served has repeatedly been crowded out of
+    # smaller top-k windows for compound questions as the corpus grew (it
+    # ranked #8/13 at one point) - this is why llm_client.py uses k=10.
+    collection = ingest_faqs()
+    results = query(
+        collection,
+        "What does Cadre AI do, and do you work with real estate companies?",
+        k=10,
+    )
+
+    assert "industries-served" in [r["id"] for r in results]

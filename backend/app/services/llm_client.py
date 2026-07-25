@@ -58,12 +58,17 @@ def generate_reply(
     # to hit that same fallback rather than bubbling up as a 500.
     try:
         latest_user_message = messages[-1].content
-        # k=5: at k=3, compound questions ("what do you do, and do you serve
-        # X industry?") sometimes missed the relevant chunk to a near-topic
-        # one (observed: "industries-served" losing out to "cadre-portal"
-        # for a real-estate question). Cheap to raise given how small the
-        # corpus is (12 entries as of writing).
-        chunks = retrieval.query(collection, latest_user_message, k=5)
+        # k=10 (out of 13 entries): compound questions ("what do you do, and
+        # do you serve X industry?") have repeatedly pushed industries-served
+        # out of smaller top-k windows as the corpus grew (k=3 -> k=5 -> k=6
+        # all eventually regressed; at one point it ranked #8/13 for a
+        # real-estate question despite literally mentioning "real estate").
+        # Embedding similarity isn't reliable at distinguishing short,
+        # closely-related FAQ entries at this scale, so k is set high enough
+        # to retrieve nearly the whole corpus rather than chasing k again.
+        # A real fix (better chunking/retrieval strategy, e.g. splitting
+        # multi-topic entries or re-ranking) is a follow-up, not a quick fix.
+        chunks = retrieval.query(collection, latest_user_message, k=10)
         system = SYSTEM_PROMPT + "\n\n" + format_knowledge_block(chunks)
 
         chat_messages = [{"role": "system", "content": system}] + [
