@@ -27,22 +27,29 @@ A customer support chatbot for Cadre AI (a fictional-for-this-exercise AI strate
 
 ## Run locally
 
+First-time setup (once per machine):
+
 ```bash
 # backend
 cd backend
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env   # fill in OPENROUTER_API_KEY
-uvicorn app.main:app --reload
 
 # frontend
 cd frontend
 npm install
 cp .env.example .env   # set VITE_API_BASE_URL=http://localhost:8000
-npm run dev
 ```
 
-**Gotcha:** `uvicorn --reload` only watches `.py` files by default, not `app/data/faqs.json`. After editing FAQ content, the running dev server won't pick it up until you manually restart it (or touch a `.py` file) - the in-memory Chroma collection stays stale otherwise.
+After that, start both servers together from the repo root:
+
+```bash
+./dev.sh          # starts backend (:8000) and frontend (:5173), logs to /tmp/cadre-*.log
+./dev.sh stop     # stops both
+```
+
+**Gotcha:** `uvicorn --reload` only watches `.py` files by default, not `app/data/faqs.json`. After editing FAQ content, the running dev server won't pick it up until you manually restart it (`./dev.sh stop && ./dev.sh`, or touch a `.py` file) - the in-memory Chroma collection stays stale otherwise.
 
 ## Required env vars
 
