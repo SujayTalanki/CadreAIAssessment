@@ -76,7 +76,7 @@ export default function App() {
           rel="noopener noreferrer"
           className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-100 sm:text-sm"
         >
-          Contact us
+          Talk With Our Team
         </a>
       </header>
 
@@ -110,7 +110,7 @@ export default function App() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center rounded-lg border border-red-300 bg-white px-3 py-1.5 text-sm font-medium text-red-700 transition-colors hover:bg-red-100"
                 >
-                  Contact us
+                  Talk With Our Team
                 </a>
               </div>
             </div>

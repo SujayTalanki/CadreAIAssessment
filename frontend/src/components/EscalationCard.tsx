@@ -17,7 +17,7 @@ export default function EscalationCard() {
             rel="noopener noreferrer"
             className="inline-flex items-center rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-indigo-700"
           >
-            Contact us
+            Talk With Our Team
           </a>
         </div>
       </div>

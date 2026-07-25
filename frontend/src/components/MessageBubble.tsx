@@ -1,4 +1,5 @@
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import type { Message } from '../types';
 
 interface MessageBubbleProps {
@@ -24,7 +25,18 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
               : 'prose-slate prose-a:text-indigo-600'
           } prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-headings:my-1.5`}
         >
-          <ReactMarkdown>{message.content}</ReactMarkdown>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              a: ({ href, children }) => (
+                <a href={href} target="_blank" rel="noopener noreferrer">
+                  {children}
+                </a>
+              ),
+            }}
+          >
+            {message.content}
+          </ReactMarkdown>
         </div>
       </div>
     </div>
