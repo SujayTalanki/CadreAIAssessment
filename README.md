@@ -9,7 +9,7 @@ See [`plan.md`](./plan.md) for the full build plan, architecture decisions, and 
 
 ## Architecture
 
-- `backend/` — FastAPI + Claude Sonnet 5 (`anthropic/claude-sonnet-5`) via OpenRouter's OpenAI-compatible API, with a retrieval-augmented knowledge base: FAQs in `backend/app/data/faqs.json` are embedded into an in-memory Chroma collection on startup, and the top-5 most relevant entries are retrieved per-turn and injected into the system prompt.
+- `backend/` — FastAPI + Claude Sonnet 5 (`anthropic/claude-sonnet-5`) via OpenRouter's OpenAI-compatible API, with a retrieval-augmented knowledge base: FAQs in `backend/app/data/faqs.json` are embedded into an in-memory Chroma collection on startup. Retrieval supports standard top-k search, but with the corpus still small we currently retrieve everything (`k=collection.count()`) each turn rather than tune a fixed k — see `CLAUDE.md` for why, and for when that would change.
 - `frontend/` — React + Vite + TypeScript + Tailwind chat UI. Conversation state lives only in the browser; there is no database.
 
 ## Running locally

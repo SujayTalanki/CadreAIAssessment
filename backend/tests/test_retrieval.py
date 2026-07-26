@@ -3,7 +3,7 @@ from app.services.retrieval import ingest_faqs, query
 
 def test_ingest_loads_all_faqs():
     collection = ingest_faqs()
-    assert collection.count() == 19
+    assert collection.count() == 27
 
 
 def test_query_returns_relevant_faq_for_booking():

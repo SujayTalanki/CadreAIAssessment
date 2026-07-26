@@ -18,10 +18,7 @@ from app.services import retrieval
 from app.system_prompt import SYSTEM_PROMPT, format_knowledge_block
 
 logger = logging.getLogger(__name__)
-
-_client = openai.OpenAI(
-    base_url=settings.OPENROUTER_BASE_URL, api_key=settings.OPENROUTER_API_KEY
-)
+_client = openai.OpenAI(base_url=settings.OPENROUTER_BASE_URL, api_key=settings.OPENROUTER_API_KEY)
 
 ESCALATE_MARKER = "[[ESCALATE]]"
 

@@ -39,7 +39,55 @@
     "id": "ai-agents-service",
     "category": "services",
     "question": "What exactly does the AI Agents service involve, and what's the difference between an AI agent and a chatbot?",
-    "answer": "AI Agents are autonomous workers built to handle your most complex, repetitive, or time-sensitive tasks, and we build them across three tiers of complexity depending on what a client actually needs: (1) Prompts & Assistants - fast to stand up, plugging into daily work to automate repeatable tasks and create immediate time savings; (2) Voice Agents - bring AI into live conversations, handling intake, qualification, support, and internal call routing, turning calls into clean data and next steps; (3) Fully Fledged AI Agents - for complex, end-to-end workflows, these can plan, take actions across multiple tools, and run full processes with guardrails and human oversight built in, rather than just responding to a single prompt. We maintain a library of example agents already built for common use cases across departments and industries as a starting point, then customize from there."
+    "answer": "AI Agents are autonomous workers built to handle your most complex, repetitive, or time-sensitive tasks, and we build them across three tiers of complexity depending on what a client actually needs: (1) Prompts & Assistants - fast to stand up, plugging into daily work to automate repeatable tasks and create immediate time savings; (2) Voice Agents - bring AI into live conversations, handling intake, qualification, support, and internal call routing, turning calls into clean data and next steps; (3) Fully Fledged AI Agents - for complex, end-to-end workflows, these can plan, take actions across multiple tools, and run full processes with guardrails and human oversight built in, rather than just responding to a single prompt. We maintain a library of over 200 example agents already built for common use cases across all 8 departments (Sales, Marketing, Customer Success, Finance, Operations, Technology, Legal, and Executive Leadership) as a starting point, then customize from there. Ask about examples for a specific department for more detail."
+  },
+  {
+    "id": "agent-library-operations",
+    "category": "agent-library",
+    "question": "What kinds of AI agents do you have pre-built for Operations teams?",
+    "answer": "Operations is the largest category in our agent library, with roughly 90 pre-built agents spanning all three complexity tiers (from simple prompts to fully autonomous workflows). Examples include a Production Schedule Optimizer for manufacturing lines, a Change Order Tracker for construction scope changes, an Automated Underwriter and Loan Validator for mortgage lending, and a KYC Automation Accelerator for financial-services compliance, alongside general-purpose agents like a Standard Operating Procedure Generator, a Workflow Mapper, and an IT Ticket Triager. If you don't see your exact use case listed, ask a strategist - there's a good chance we've already built something close, or can build it."
+  },
+  {
+    "id": "agent-library-sales",
+    "category": "agent-library",
+    "question": "What kinds of AI agents do you have pre-built for Sales teams?",
+    "answer": "Our agent library includes around 40 Sales-focused agents. Industry-specific examples include a Lead Scoring Optimizer for real estate, a Rate Lock Optimizer for mortgage lending, a CIM Analyst and Deal Sourcer for private equity deal teams, and a Bid Estimator and Automated Takeoff Generator for construction. General-purpose sales agents include a Cold Email Writer, a CRM Data Entry Automator, and an Outbound Caller for high-volume outreach."
+  },
+  {
+    "id": "agent-library-marketing",
+    "category": "agent-library",
+    "question": "What kinds of AI agents do you have pre-built for Marketing teams?",
+    "answer": "We have roughly 20 Marketing agents in our library, including generalist tools like an SEO Expert, a LinkedIn content generator (LinkedIn Legend), and a Content Creator for on-brand copy at scale, alongside industry-specific ones like an Email Campaign Optimizer for retail and e-commerce and a Review Response Generator for hospitality. Most are built to plug directly into an existing marketing workflow rather than replace it."
+  },
+  {
+    "id": "agent-library-finance",
+    "category": "agent-library",
+    "question": "What kinds of AI agents do you have pre-built for Finance teams?",
+    "answer": "Our Finance agent library (about 17 agents) leans heavily toward private equity and financial-services use cases: a Data Room Analyst and a Predictive Portco Performance agent for PE diligence and portfolio monitoring, a Client Risk Assessor and Portfolio Recommendation Advisor for financial services, and a Dynamic Pricing Optimizer for hospitality revenue management. We also have general-purpose agents like a Financial Forecasting Advisor for board-ready scenario modeling."
+  },
+  {
+    "id": "agent-library-technology",
+    "category": "agent-library",
+    "question": "What kinds of AI agents do you have pre-built for Technology and engineering teams?",
+    "answer": "We have around 14 agents built for technology and engineering teams, including a Pull Request Reviewer and a Code Documentation Generator to reduce review and documentation overhead, a Security Vulnerability Triager and Incident Response Coordinator for on-call workflows, and a Technical Debt Analyzer to help prioritize refactoring work. A Transcript to Flowchart Generator is also popular for turning meeting recordings directly into visual process diagrams."
+  },
+  {
+    "id": "agent-library-customer-success",
+    "category": "agent-library",
+    "question": "What kinds of AI agents do you have pre-built for Customer Success teams?",
+    "answer": "Our Customer Success library (about 13 agents) includes a Guest Preference Manager for hospitality, a Customer Health Analyst for predicting churn risk, a QBR Prep Automator that turns account data into review-ready materials, a Knowledge Base Auto-updater that keeps documentation current from support tickets, and a Client Update Notifier for keeping mortgage borrowers informed at each loan milestone."
+  },
+  {
+    "id": "agent-library-legal",
+    "category": "agent-library",
+    "question": "What kinds of AI agents do you have pre-built for Legal teams?",
+    "answer": "Legal is a smaller but focused part of our agent library: an NDA Analyst that auto-redlines NDAs to firm standards for private equity deal teams, a Compliance Policy Guide that answers employee questions on data privacy and governance without a legal-team bottleneck, and a Contract Clause Library that surfaces pre-approved language on demand."
+  },
+  {
+    "id": "agent-library-executive-leadership",
+    "category": "agent-library",
+    "question": "What kinds of AI agents do you have pre-built for Executive Leadership?",
+    "answer": "For executive teams, our library includes an Investment Committee Prep agent that auto-generates IC memos and decision decks for private equity, an Executive Coach offering on-demand leadership guidance, a Business Metrics Explainer that translates complex KPIs into plain language for non-technical stakeholders, and a Meeting Prep Briefing Generator that pulls context from CRM, email, and Slack ahead of important conversations."
   },
   {
     "id": "getting-started",
@@ -75,7 +123,7 @@
     "id": "llm-selection-and-data-security",
     "category": "technical",
     "question": "Which AI models do you use, and how do you handle data security?",
-    "answer": "We're model-agnostic and work across OpenAI, Anthropic (Claude), Google, Microsoft, AWS, Salesforce, Snowflake, and OpenRouter for broader model access, selecting the right model per use case based on cost, latency, quality, and compliance requirements. Your data is never used to train third-party models. Security posture, data handling, and compliance requirements are scoped specifically to each client engagement, so a strategist can walk through the details relevant to your environment."
+    "answer": "We're model-agnostic and work across OpenAI, Anthropic (Claude), Google, Microsoft, AWS, Salesforce, Snowflake, and OpenRouter for broader model access, selecting the right model per use case based on cost, latency, quality, and compliance requirements. Your data is black-boxed so it's never used to train third-party models. We also address the shadow-AI risk of employees sharing company secrets on personal AI accounts, by getting your entire team onto the same secure, compliant AI tools instead of ad hoc, unmanaged ones."
   },
   {
     "id": "case-studies",
