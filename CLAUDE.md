@@ -60,6 +60,18 @@ After that, start both servers together from the repo root:
 
 Backend → Render (via `render.yaml` blueprint), frontend → Vercel (root directory `frontend/`). Render's free tier spins down after ~15 min idle; `.github/workflows/keep-alive.yml` pings `/api/health` every 10 minutes to prevent that, driven by a repo variable `BACKEND_HEALTH_URL` (not a secret — it's just the public Render URL). Don't remove this workflow without either accepting the cold-start UX regression or setting up an equivalent mitigation.
 
+## Claude Code tooling
+
+This repo has custom commands and subagents under `.claude/` — use them instead of re-deriving the same instructions by hand:
+
+**Commands** (`.claude/commands/`):
+- `/validate-faqs` — checks `faqs.json` is valid, ids are unique, and the corpus-count test assertion is up to date. Free, local, no API calls.
+- `/add-faq` — scaffolds a new FAQ entry in the correct schema/tone, checks for overlap with existing entries first, and asks for confirmation before editing `faqs.json`.
+
+**Subagents** (`.claude/agents/`):
+- `web-content-extractor` — verbatim extraction from external web pages (e.g. paginated listings); never summarizes or drops items, always reports exact counts.
+- `faq-writer` — drafts FAQ content matching this repo's schema/tone/no-fabrication rules; read-only, so `/add-faq` applies its draft rather than letting it write directly.
+
 ## See also
 
 `plan.md` at repo root for the full phased build plan and explicit scope-cut list.
