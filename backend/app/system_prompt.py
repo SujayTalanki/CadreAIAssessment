@@ -41,8 +41,8 @@ def format_knowledge_block(chunks: list[dict]) -> str:
     Format retrieved FAQ chunks into a knowledge block for the system prompt.
 
     Args:
-        chunks (list[dict]): FAQ entries returned by retrieval.query(), each
-            with question and answer keys. May be empty if nothing matched.
+        chunks (list[dict]): FAQ entries, each with question and answer
+            keys. May be empty if the FAQ corpus itself is empty.
 
     Returns:
         str: A "Relevant knowledge for this question" block listing each

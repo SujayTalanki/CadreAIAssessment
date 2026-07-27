@@ -179,10 +179,11 @@ def test_chat_sends_system_prompt_and_full_history_to_the_model(monkeypatch):
     assert response.status_code == 200
     sent_messages = captured["messages"]
     assert sent_messages[0]["role"] == "system"
-    assert "Cadre AI support assistant" in sent_messages[0]["content"]
-    assert "Relevant knowledge for this question" in sent_messages[0]["content"]
-    # The full conversation history follows the system message, in order,
-    # unmodified.
+    system_blocks = sent_messages[0]["content"]
+    system_text = system_blocks[0]["text"]
+    assert "Cadre AI support assistant" in system_text
+    assert "Relevant knowledge for this question" in system_text
+    assert system_blocks[0]["cache_control"] == {"type": "ephemeral", "ttl": "1h"}
     assert [m["role"] for m in sent_messages[1:]] == ["user", "assistant", "user"]
     assert sent_messages[-1]["content"] == "How do I book a call?"
 

@@ -15,4 +15,4 @@ Schema for every entry: `id` (kebab-case, derived from the question), `category`
 
 Tone: concise, professional-but-warm, matching the voice already in the corpus - not marketing copy, not robotic. Prefer one consolidated paragraph per entry over bullet lists, consistent with the rest of the corpus, unless the existing corpus already uses structured formatting for that kind of content (e.g. case studies).
 
-Output the proposed entry as a ready-to-paste JSON object (or a diff against an existing entry, if amending one), plus a one-line note on where in the file it should go and whether the corpus-count test assertion will need updating.
+Output the proposed entry as a ready-to-paste JSON object (or a diff against an existing entry, if amending one), plus a one-line note on where in the file it should go.

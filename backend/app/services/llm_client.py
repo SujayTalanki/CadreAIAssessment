@@ -7,18 +7,45 @@ happens to match Cadre AI's own stated approach in the brief ("OpenRouter
 for model access"). Reasoning/extended-thinking is explicitly disabled via
 extra_body, since OpenRouter's unified API doesn't expose Anthropic's
 `thinking` param directly - this is a grounded-QA task with no need for it.
+
+No vector store: the entire FAQ corpus is loaded fresh from faqs.json on
+every call and sent in full - a plain file read, cheap enough not to
+bother caching in memory, so editing faqs.json takes effect on the very
+next request with no restart needed. The resulting prompt is still cached
+on OpenRouter's side (see generate_reply) to reduce token usage, latency,
+and cost - that's a different kind of caching, applied after this load.
 """
 
+import json
 import logging
-import chromadb
+from pathlib import Path
 import openai
 from app.config import settings
 from app.models import ChatMessage, ChatResponse
-from app.services import retrieval
 from app.system_prompt import SYSTEM_PROMPT, format_knowledge_block
 
 logger = logging.getLogger(__name__)
 _client = openai.OpenAI(base_url=settings.OPENROUTER_BASE_URL, api_key=settings.OPENROUTER_API_KEY)
+
+FAQS_PATH = Path(__file__).parent.parent / "data" / "faqs.json"
+
+
+def _load_knowledge_block() -> str:
+    """
+    Load the FAQ corpus fresh from disk and format it into a knowledge block.
+
+    Read on every call (not cached) - a plain file read with no per-query
+    ranking involved, so the result is already deterministic across every
+    call, and cheap enough that editing faqs.json can take effect
+    immediately without a server restart.
+
+    Returns:
+        str: The formatted "Relevant knowledge for this question" block.
+    """
+    with open(FAQS_PATH, "r", encoding="utf-8") as f:
+        faqs = json.load(f)
+    return format_knowledge_block(faqs)
+
 
 ESCALATE_MARKER = "[[ESCALATE]]"
 
@@ -61,34 +88,19 @@ def _parse_escalation(reply_text: str) -> tuple[str, bool]:
     return reply_text.strip(), escalate
 
 
-def generate_reply(messages: list[ChatMessage], collection: chromadb.Collection) -> ChatResponse:
+def generate_reply(messages: list[ChatMessage]) -> ChatResponse:
     """
-    Retrieve relevant FAQ knowledge and generate a grounded chat reply.
+    Generate a grounded chat reply using the full FAQ corpus as context.
 
-    Retrieval, the API call, and response parsing all live inside one try
-    block: CLAUDE.md guarantees /api/chat always returns HTTP 200 with a
-    graceful message, and a failure anywhere in this chain (a Chroma error,
-    an empty choices list on a provider-side refusal, etc.) needs to hit
-    that same fallback rather than bubbling up as a 500.
-
-    Retrieval always fetches the entire corpus (k=collection.count()), not
-    a fixed number. Fixed k values (3 -> 5 -> 6 -> 10) each got outpaced by
-    corpus growth in turn - a compound question like "what do you do, and
-    do you serve X industry?" repeatedly pushed industries-served out of
-    the top-k window as more FAQs were added (it eventually ranked #11/15).
-    Embedding similarity isn't reliable at distinguishing short,
-    closely-related FAQ entries at this scale, so top-k filtering doesn't
-    actually earn its keep yet - the corpus is small enough that always
-    including everything is simpler and permanently removes this failure
-    mode. Revisit top-k filtering (with a real chunking/re-ranking
-    strategy) if the corpus grows large enough that including it all
-    becomes a real cost/latency concern - it isn't at 15 entries.
+    The API call and response parsing live inside one try block: CLAUDE.md
+    guarantees /api/chat always returns HTTP 200 with a graceful message,
+    and a failure anywhere in this chain (an empty choices list on a
+    provider-side refusal, etc.) needs to hit that same fallback rather
+    than bubbling up as a 500.
 
     Args:
         messages (list[ChatMessage]): The full conversation history so
             far, most recent message last.
-        collection (chromadb.Collection): The FAQ collection to retrieve
-            from, built once at app startup.
 
     Returns:
         ChatResponse: The assistant's reply and whether to escalate to a
@@ -96,19 +108,29 @@ def generate_reply(messages: list[ChatMessage], collection: chromadb.Collection)
             than raising.
     """
     try:
-        latest_user_message = messages[-1].content
-        chunks = retrieval.query(collection, latest_user_message, k=collection.count())
-        system = SYSTEM_PROMPT + "\n\n" + format_knowledge_block(chunks)
+        system_text = SYSTEM_PROMPT + "\n\n" + _load_knowledge_block()
 
-        chat_messages = [{"role": "system", "content": system}] + [
-            {"role": m.role, "content": m.content} for m in messages
-        ]
+        chat_messages = [
+            {
+                "role": "system",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": system_text,
+                        "cache_control": {"type": "ephemeral", "ttl": "1h"},
+                    }
+                ],
+            }
+        ] + [{"role": m.role, "content": m.content} for m in messages]
 
         response = _client.chat.completions.create(
             model=settings.MODEL_NAME,
             max_tokens=1024,
             messages=chat_messages,
-            extra_body={"reasoning": {"enabled": False}},
+            extra_body={
+                "reasoning": {"enabled": False},
+                "session_id": "cadre-ai-chatbot-shared-system-prompt-cache",
+            },
         )
         reply_text = response.choices[0].message.content or ""
     except openai.RateLimitError:

@@ -8,22 +8,23 @@ A customer support chatbot for Cadre AI (a fictional-for-this-exercise AI strate
 
 ## Architecture
 
-- **`backend/`** — FastAPI app. Retrieval-augmented generation over a static FAQ corpus:
-  1. On startup, `app/data/faqs.json` is embedded into an in-memory Chroma collection (`app/services/retrieval.py`), using Chroma's bundled default embedding function (`all-MiniLM-L6-v2` via onnxruntime — no external embeddings API key needed).
-  2. `retrieval.query()` implements simple, RAG-style top-k retrieval - it takes an explicit `k` and returns the k nearest FAQ entries by embedding similarity. Nothing about the retrieval code is hardcoded to "everything." What's tuned is the `k` value passed in at the call site: `llm_client.py` currently calls `retrieval.query(collection, latest_user_message, k=collection.count())`, i.e. it retrieves **the entire FAQ corpus** every turn rather than a fixed number, appending all of it to the static system prompt (`app/system_prompt.py`) before calling Claude. This isn't a bug, with the corpus still small (27 entries as of this writing), retrieving everything is simpler than tuning k further and permanently removes that failure mode, at negligible extra token cost per call. If the corpus grows large enough that whole-corpus retrieval becomes a real cost/latency concern, dropping back to a fixed `k` (paired with a real re-ranking strategy, since embedding similarity alone wasn't reliable enough at even 15 entries) is a one-line change at that call site - not a redesign.
+- **`backend/`** — Cache-Augmented Generation (CAG), no vector store or retrieval step at all:
+  1. `app/services/llm_client.py`'s `_load_knowledge_block()` reads the entire `app/data/faqs.json` corpus fresh from disk on every call, in the file's own order. There's no embedding model and no vector store (no `chromadb`) - at this corpus size there's nothing to select, so a real retrieval step would just be complexity with nothing to select from. It's a plain file read, cheap enough not to cache in memory - editing `faqs.json` takes effect on the very next request, no restart needed.
+  2. The resulting system prompt (instructions + the knowledge block) is identical on every call, which is what makes it cacheable *on OpenRouter's side*: marked with Anthropic's `cache_control: {"ttl": "1h"}` (via OpenRouter's OpenAI-compatible endpoint), plus a fixed `session_id` for sticky provider routing. One full-price write per hour of activity, ~90% cheaper cached reads for every call after. This is a different cache from the file read above - one's about not re-reading a file, the other's about not re-billing an unchanged prompt.
   3. The model call goes through **OpenRouter's OpenAI-compatible endpoint** (`app/services/llm_client.py`, using the `openai` SDK pointed at `https://openrouter.ai/api/v1`, model id `anthropic/claude-sonnet-5`), not the native Anthropic SDK — only an OpenRouter key was available for this exercise, not a native Anthropic key. This also matches Cadre AI's own stated approach in the brief ("OpenRouter for model access"). Extended thinking is disabled via `extra_body={"reasoning": {"enabled": False}}`, OpenRouter's equivalent of Anthropic's native `thinking` param.
-  4. The model decides whether the retrieved knowledge actually answers the question. If not, it appends a literal `[[ESCALATE]]` marker to its reply, which the backend strips into a boolean `escalate` field in the response.
+  4. The model decides whether the knowledge block actually answers the question. If not, it appends a literal `[[ESCALATE]]` marker to its reply, which the backend strips into a boolean `escalate` field in the response.
+  5. **If the corpus outgrows CAG** (loading everything in full stops being cheap/fast enough): reintroduce a vector store (e.g. `chromadb`) and real top-k retrieval, drop the whole-corpus caching, pick a chunk size empirically (test a few sizes against real questions rather than guessing one), and add a reranking step on top of initial retrieval if the embedding-similarity results alone aren't precise enough - evaluate both chunk size and `k` via precision@k/recall@k against a labeled set of queries, not by eyeballing results.
 - **`frontend/`** — React + Vite + TypeScript + Tailwind. Plain `fetch()` chat UI; conversation state lives only in browser state (sent in full on every request) — there is no database and no server-side session.
 
 ## Hard conventions — don't casually change these
 
 - **FAQ content only changes via `backend/app/data/faqs.json`.** Never hardcode facts into `system_prompt.py` — that file holds only behavioral instructions (scope, no-fabrication rule, escalation rule, tone), not content.
-- **The Chroma index is rebuilt in-memory on every app startup.** There is no persistent volume and no external vector DB. Don't add one without updating this file and re-checking the Render deployment config — the corpus is small enough that in-memory rebuild is intentional, not a stopgap.
+- **No vector store, no embedding model.** `llm_client.py`'s `_load_knowledge_block()` reads `faqs.json` fresh on every call. Don't add `chromadb` (or similar) back without updating this file first - see the Architecture section above for when that'd actually be warranted.
 - **Non-streaming `/api/chat` by design.** Don't add SSE/streaming without updating this file first — the escalation-marker parsing and error-handling logic both assume the full response text is available before returning.
 - **No database, no auth, no persisted conversation history.** This is a deliberate scope cut for a stateless MVP support widget, not an oversight. See `plan.md` for the full scope-cut list.
-- **Backend tests never hit the real OpenRouter API** — `llm_client._client.chat.completions.create` is monkeypatched in `backend/tests/test_chat_endpoint.py`; retrieval tests run against a real (but ephemeral, in-memory) Chroma collection since that has no external cost.
-- **Error handling in `llm_client.py` must always return HTTP 200** with a graceful user-facing message on failure (rate limit, connection error, auth error, empty response, or anything else) — never leak a stack trace to the frontend. This is why `generate_reply`'s try block wraps retrieval + the API call + response parsing all together, not just the API call.
-- **`POST /api/chat` in `routes/chat.py` must stay a plain `def`, not `async def`.** `generate_reply` does blocking work (a synchronous Chroma query, then a synchronous HTTP call to OpenRouter); FastAPI runs sync route handlers in a thread pool, so this keeps one slow chat request from stalling the event loop for every other concurrent request — including the `/api/health` keep-alive ping.
+- **Backend tests never hit the real OpenRouter API** — `llm_client._client.chat.completions.create` is monkeypatched in `backend/tests/test_chat_endpoint.py`.
+- **Error handling in `llm_client.py` must always return HTTP 200** with a graceful user-facing message on failure (rate limit, connection error, auth error, empty response, or anything else) — never leak a stack trace to the frontend. This is why `generate_reply`'s try block wraps the API call and response parsing together, not just the API call alone.
+- **`POST /api/chat` in `routes/chat.py` must stay a plain `def`, not `async def`.** `generate_reply` does a blocking HTTP call to OpenRouter; FastAPI runs sync route handlers in a thread pool, so this keeps one slow chat request from stalling the event loop for every other concurrent request — including the `/api/health` keep-alive ping.
 
 ## Run locally
 
@@ -49,8 +50,6 @@ After that, start both servers together from the repo root:
 ./dev.sh stop     # stops both
 ```
 
-**Gotcha:** `uvicorn --reload` only watches `.py` files by default, not `app/data/faqs.json`. After editing FAQ content, the running dev server won't pick it up until you manually restart it (`./dev.sh stop && ./dev.sh`, or touch a `.py` file) - the in-memory Chroma collection stays stale otherwise.
-
 ## Required env vars
 
 - Backend: `OPENROUTER_API_KEY`, `FRONTEND_ORIGIN` (CORS allowlist), `MODEL_NAME` (defaults to `anthropic/claude-sonnet-5`)
@@ -65,8 +64,9 @@ Backend → Render (via `render.yaml` blueprint), frontend → Vercel (root dire
 This repo has custom commands and subagents under `.claude/` — use them instead of re-deriving the same instructions by hand:
 
 **Commands** (`.claude/commands/`):
-- `/validate-faqs` — checks `faqs.json` is valid, ids are unique, and the corpus-count test assertion is up to date. Free, local, no API calls.
-- `/add-faq` — scaffolds a new FAQ entry in the correct schema/tone, checks for overlap with existing entries first, and asks for confirmation before editing `faqs.json`.
+- `/validate-faqs` — checks `faqs.json` is valid JSON, ids are unique, and required fields are non-empty. Free, local, no API calls. Standalone, since direct hand-edits to `faqs.json` don't go through `/add-faq` at all.
+- `/add-faq` — scaffolds a new FAQ entry in the correct schema/tone, checks for overlap with existing entries first, asks for confirmation before editing `faqs.json`, then runs the same validation as `/validate-faqs` automatically. No restart needed after - `faqs.json` reloads fresh on the next request.
+- `/commit` — stages, scans for anything secret-looking, and commits with a short auto-generated message. Local commit only, never pushes.
 
 **Subagents** (`.claude/agents/`):
 - `web-content-extractor` — verbatim extraction from external web pages (e.g. paginated listings); never summarizes or drops items, always reports exact counts.
