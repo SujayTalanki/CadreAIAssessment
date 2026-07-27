@@ -14,6 +14,9 @@ import chromadb
 DEFAULT_FAQS_PATH = Path(__file__).parent.parent / "data" / "faqs.json"
 COLLECTION_NAME = "cadre_faqs"
 
+# Number of batches used to ingest FAQ data into vectorstore
+INGEST_BATCH_SIZE = 5
+
 
 def ingest_faqs(faqs_path: str | Path | None = None) -> chromadb.Collection:
     """
@@ -47,7 +50,12 @@ def ingest_faqs(faqs_path: str | Path | None = None) -> chromadb.Collection:
     ]
     ids = [faq["id"] for faq in faqs]
 
-    collection.add(documents=documents, metadatas=metadatas, ids=ids)
+    for i in range(0, len(faqs), INGEST_BATCH_SIZE):
+        collection.add(
+            documents=documents[i : i + INGEST_BATCH_SIZE],
+            metadatas=metadatas[i : i + INGEST_BATCH_SIZE],
+            ids=ids[i : i + INGEST_BATCH_SIZE],
+        )
     return collection
 
 
